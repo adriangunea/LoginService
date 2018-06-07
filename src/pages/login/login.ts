@@ -3,6 +3,7 @@ import { NavController, AlertController, LoadingController, Loading, IonicPage }
 import { AuthServiceProvider } from '../../providers/auth-service';
 import { HelloIonicPage } from '../hello-ionic/hello-ionic';
 
+
 @IonicPage()
 @Component({
   selector: 'page-login',
@@ -14,10 +15,14 @@ export class LoginPage {
 
   constructor(private nav: NavController, private auth: AuthServiceProvider, private alertCtrl: AlertController, private loadingCtrl: LoadingController) { }
 
-  public createAccount() {
+//Evento scatenato quando l'utente preme il tasto register
+  public createAccount(e) {
+    e.preventDefault();
     this.nav.push('RegisterPage');
   }
 
+//Metodo utilizzato per controllare se le credenziali sono giuste
+//e se sono giuste cambiare pagina a HelloIoniPage
   public login() {
     this.showLoading()
     this.auth.login(this.registerCredentials).subscribe(allowed => {
@@ -31,7 +36,7 @@ export class LoginPage {
         this.showError(error);
       });
   }
-
+//Mostra il caricamento fino a quando il calcolatore ha smesso di processare 
   showLoading() {
     this.loading = this.loadingCtrl.create({
       content: 'Please wait...',

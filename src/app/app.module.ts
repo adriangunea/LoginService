@@ -6,11 +6,13 @@ import { MyApp } from './app.component';
 import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
 import { ItemDetailsPage } from '../pages/item-details/item-details';
 import { ListPage } from '../pages/list/list';
+import { RegisterPage } from '../pages/register/register'
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { LoginPage } from '../pages/login/login'
 import { AuthServiceProvider } from '../providers/auth-service';
+import { IonicStorageModule } from '@ionic/storage';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,7 @@ import { AuthServiceProvider } from '../providers/auth-service';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+     IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [

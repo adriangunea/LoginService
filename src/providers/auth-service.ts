@@ -1,5 +1,8 @@
+//Pacchetti e classi che servono per utilizzare i vari metodi
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
+import { Storage } from '@ionic/storage';
+import * as md5 from 'md5';
 
 export class User {
   name: string;
@@ -15,31 +18,55 @@ export class User {
 export class AuthServiceProvider {
   currentUser: User;
 
+  constructor(private storage: Storage){};
+
+//Metodo per accedere alla homepage se l'utente è registrato
   public login(credentials) {
-    if (credentials.email === null || credentials.password === null) {
+    if (credentials.email == null || credentials.password == null) {
       return Observable.throw("Please insert credentials");
-    } else {
+    }
+    else {
       return Observable.create(observer => {
-        // At this point make a request to your backend to make a real check!
-        let access = (credentials.password === "pass" && credentials.email === "email");
-        this.currentUser = new User('Simon', 'saimon@devdactic.com');
-        observer.next(access);
-        observer.complete();
+        this.storage.get(credentials.email)
+        .then(pass => {
+          if (pass == md5(credentials.password)){
+            observer.next(true);
+          }
+          else {
+            observer.next(false);
+          }
+          observer.complete();
+        });
       });
     }
   }
 
+//Metodo per registrare l'utente al sito
   public register(credentials) {
-    if (credentials.email === null || credentials.password === null) {
-      return Observable.throw("Please insert credentials");
-    } else {
-      // At this point store the credentials to your backend!
-      return Observable.create(observer => {
+  if (credentials.email === null || credentials.password === null) {
+    return Observable.throw("Please insert credentials");
+  } else {
+    return Observable.create(async observer => {
+      let newEmail: boolean = await this.storage.get(credentials.email)
+        .then(pass => pass == undefined);
+
+      if(newEmail){
+        this.storage.set(credentials.email, md5(credentials.password));
         observer.next(true);
-        observer.complete();
-      });
-    }
+      }
+      else {
+        observer.next(false);
+      }
+      observer.complete();
+    });
   }
+}
+
+
+
+
+
+
 
   public getUserInfo() : User {
     return this.currentUser;
